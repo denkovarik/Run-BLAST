@@ -189,7 +189,7 @@ def parse_args(cmd_args):
             Popen([args['script_args']['-program'], '-help'])
         exit()
         
-    # fix filepaths if in windows\
+    # fix filepaths if in windows
     if os.name == 'nt':
         for key in args['script_args'].keys():
             if args['script_args'][key] is not None:
