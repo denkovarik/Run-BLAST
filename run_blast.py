@@ -4,8 +4,13 @@ import shutil
 from run_blast_utils import * 
     
 
-blast_rslt_dir = 'blast_rslts'
-blast_working_dir = 'temp_blast'
+blast_rslt_dir = 'blast_rslts/'
+blast_working_dir = 'temp_blast/'
+# Fix filepath delimeters for windows OS
+if os.name == 'nt': 
+    blast_rslt_dir = 'blast_rslts\\'
+    blast_working_dir = 'temp_blast\\'
+
 commands = []
 args = parse_args(sys.argv)
 
