@@ -1,5 +1,5 @@
 import sys, os, time
-from utils import *
+#from utils import *
 import shutil     
 from run_blast_utils import * 
     
