@@ -103,8 +103,6 @@ def exec_commands(cmds):
         return p.returncode == 0
     def fail():
         sys.exit(1)
-    print(cmds)
-    print('-query_parallel' in cmds)
 
     max_task = cpu_count()
     processes = []
