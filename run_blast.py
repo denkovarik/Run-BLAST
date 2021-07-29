@@ -20,5 +20,6 @@ commands = compile_cmd(args, blast_rslt_dir, blast_working_dir)
 
 start_time = time.time()
 exec_commands(commands)
-shutil.rmtree(blast_working_dir)
+if os.path.isdir(blast_working_dir):
+    shutil.rmtree(blast_working_dir)
 print("---%s seconds ---" % (time.time() - start_time))
