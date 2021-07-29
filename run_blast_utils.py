@@ -1,7 +1,7 @@
 import sys, os, time
 from subprocess import Popen, list2cmdline
 import shutil
-from progress.bar import IncrementalBar
+from progress.bar import Bar
     
     
 def compile_cmd(args, blast_rslt_dir, blast_working_dir):
@@ -40,7 +40,8 @@ def compile_cmd(args, blast_rslt_dir, blast_working_dir):
         for key in args['blast_args'].keys():
             cmd += [key]
             if args['blast_args'][key] is not None:
-                cmd += [args['blast_args'][key]]        
+                cmd += [args['blast_args'][key]]
+        commands += [cmd]
     else:
         # Create files for fasta sequences.
         queries = parse_fasta(args['script_args']['-query_parallel'])
@@ -102,35 +103,38 @@ def exec_commands(cmds):
         return p.returncode == 0
     def fail():
         sys.exit(1)
+    print(cmds)
+    print('-query_parallel' in cmds)
 
     max_task = cpu_count()
     processes = []
-    bar = IncrementalBar('| BLASTing Sequences...', max = len(cmds))
-    while True:
-        while cmds and len(processes) < max_task:
-            task = cmds.pop()
-            i = 0
-            while i < len(task):
-                file = ""
-                if task[i] == '-query' and i < len(task) - 1:
-                    file = task[i+1]
-                    break
-                i += 1
-            processes.append((Popen(task), file))
+    with Bar('| BLASTing Sequences...', max=len(cmds)) as bar:
+        while True:
+            while cmds and len(processes) < max_task:
+                task = cmds.pop()
+                i = 0
+                while i < len(task):
+                    file = ""
+                    if task[i] == '-query' and i < len(task) - 1:
+                        file = task[i+1]
+                        break
+                    i += 1
+                processes.append((Popen(task), file))
 
-        for p in processes:
-            if done(p[0]):
-                if success(p[0]):
-                    os.remove(p[1])
-                    processes.remove(p)
-                    bar.next()
-                else:
-                    fail()
+            for p in processes:
+                if done(p[0]):
+                    if success(p[0]):
+                        if '-query_parallel' in cmds:
+                            os.remove(p[1])
+                        processes.remove(p)
+                        bar.next()
+                    else:
+                        fail()
 
-        if not processes and not cmds:
-            break
-        else:
-            time.sleep(0.05)
+            if not processes and not cmds:
+                break
+            else:
+                time.sleep(0.05)
             
     
 def fix_win_filepath(filepath):
