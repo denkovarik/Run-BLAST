@@ -4,6 +4,9 @@ sudo apt-get update
 sudo apt install python3-pip
 sudo apt install python-pip
 # Install Progress Bar
-conda install progress progressbar2 alive-progress tqdm
+conda install progress 
+conda install progressbar2 
+conda install alive-progress 
+conda install tqdm
 # Install Blast
 sudo apt-get install ncbi-blast+
